@@ -10,10 +10,37 @@ use Illuminate\Http\Request;
 class WeeklyMenuController extends Controller
 {
     /**
-     * Get the weekly menu.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/menu/week",
+     *     tags={"Student - Menu"},
+     *     summary="Get weekly menu",
+     *     description="Retrieve the weekly menu with optional filters",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="day",
+     *         in="query",
+     *         description="Filter by day (monday, tuesday, etc.)",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="meal_type",
+     *         in="query",
+     *         description="Filter by meal type",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"breakfast", "lunch", "dinner"})
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Weekly menu retrieved successfully"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function index(Request $request)
     {
@@ -41,10 +68,20 @@ class WeeklyMenuController extends Controller
     }
 
     /**
-     * Get a specific menu item.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/menu/{id}",
+     *     tags={"Student - Menu"},
+     *     summary="Get specific menu item",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=404, description="Menu not found")
+     * )
      */
     public function show($id)
     {

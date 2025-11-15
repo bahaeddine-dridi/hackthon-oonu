@@ -1,0 +1,2641 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "OOUN Restaurant API Documentation",
+        "description": "University Restaurant Management System API - OOUN Tunisia",
+        "contact": {
+            "name": "OOUN Restaurant System",
+            "email": "admin@ooun.tn"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/v1",
+            "description": "Development Server"
+        }
+    ],
+    "paths": {
+        "/admin/ai/recommendations": {
+            "get": {
+                "tags": [
+                    "Admin - AI Recommendations"
+                ],
+                "summary": "Get AI recommendations",
+                "description": "Retrieve AI-generated recommendations based on feedback analysis (placeholder implementation)",
+                "operationId": "8e3bc61799934ec4797d926fa92daeb3",
+                "responses": {
+                    "200": {
+                        "description": "Recommendations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "content": {
+                                                        "type": "string"
+                                                    },
+                                                    "confidence": {
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    },
+                                                    "category": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "note": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - AI Recommendations"
+                ],
+                "summary": "Save AI recommendation",
+                "description": "Store an AI recommendation in the database",
+                "operationId": "bfe08ca59f26d5cbbc41e69f5551c844",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Improve Service Speed"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Based on analysis, consider adding more service counters"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Recommendation saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/ai/recommendations/saved": {
+            "get": {
+                "tags": [
+                    "Admin - AI Recommendations"
+                ],
+                "summary": "Get saved recommendations",
+                "description": "Retrieve previously saved AI recommendations from database",
+                "operationId": "aacb4e171346aa677c37e7e2ed1f83b5",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Saved recommendations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/feedback": {
+            "get": {
+                "tags": [
+                    "Admin - Feedback Management"
+                ],
+                "summary": "Get all feedback",
+                "description": "Retrieve paginated list of feedback with filtering options",
+                "operationId": "2e63332af1e7c73035ebe06c02963a1a",
+                "parameters": [
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter by rating (1-5)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 5,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "taste",
+                                "quality",
+                                "service",
+                                "cleanliness"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sentiment",
+                        "in": "query",
+                        "description": "Filter by sentiment",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "positive",
+                                "neutral",
+                                "negative"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "menu_id",
+                        "in": "query",
+                        "description": "Filter by menu ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "description": "Filter by student ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Feedback retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/feedback/{id}": {
+            "get": {
+                "tags": [
+                    "Admin - Feedback Management"
+                ],
+                "summary": "Get specific feedback",
+                "description": "Retrieve detailed information about a feedback entry",
+                "operationId": "bfb7512dfce5da9dfaff34544e732b81",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Feedback retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Feedback not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Feedback Management"
+                ],
+                "summary": "Delete feedback",
+                "description": "Remove a feedback entry from the system",
+                "operationId": "dabc993d7331567f62d4b87b19b8fcb7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Feedback deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Feedback not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/feedback/statistics": {
+            "get": {
+                "tags": [
+                    "Admin - Statistics"
+                ],
+                "summary": "Get feedback statistics",
+                "description": "Retrieve comprehensive feedback statistics including averages and distribution",
+                "operationId": "17d9181c45aaa5cfb08ef31741024e5c",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Start date for statistics (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "End date for statistics (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_feedback": {
+                                                    "type": "integer"
+                                                },
+                                                "average_rating": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "by_rating": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "by_category": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "by_sentiment": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/menus": {
+            "get": {
+                "tags": [
+                    "Admin - Menu Management"
+                ],
+                "summary": "Get all menus",
+                "description": "Retrieve paginated list of all weekly menus with optional filters",
+                "operationId": "36051cda615bfd27a42023c1d63db66b",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "available",
+                                "unavailable"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "day",
+                        "in": "query",
+                        "description": "Filter by day",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Mon",
+                                "Tue",
+                                "Wed",
+                                "Thu",
+                                "Fri",
+                                "Sat",
+                                "Sun"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "meal_type",
+                        "in": "query",
+                        "description": "Filter by meal type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "breakfast",
+                                "lunch",
+                                "dinner"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Menus retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - Menu Management"
+                ],
+                "summary": "Create new menu",
+                "description": "Create a new weekly menu item",
+                "operationId": "d9721b079957d3a5b13d96309a833cd0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "day",
+                                    "meal_type",
+                                    "title"
+                                ],
+                                "properties": {
+                                    "day": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Mon",
+                                            "Tue",
+                                            "Wed",
+                                            "Thu",
+                                            "Fri",
+                                            "Sat",
+                                            "Sun"
+                                        ],
+                                        "example": "Mon"
+                                    },
+                                    "meal_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "breakfast",
+                                            "lunch",
+                                            "dinner"
+                                        ],
+                                        "example": "lunch"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Couscous"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Traditional couscous with vegetables"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "vegetarian",
+                                            "halal"
+                                        ]
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "available",
+                                            "unavailable"
+                                        ],
+                                        "example": "available"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Menu created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/menus/{id}": {
+            "get": {
+                "tags": [
+                    "Admin - Menu Management"
+                ],
+                "summary": "Get specific menu",
+                "description": "Retrieve detailed information about a specific menu including feedback and reservations",
+                "operationId": "3e117a125b402ab5a105789059850437",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Menu retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Menu not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Menu Management"
+                ],
+                "summary": "Update menu",
+                "description": "Update an existing menu item",
+                "operationId": "1bcdaefc8a35dfce0f92736a82f865a6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "day": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Mon",
+                                            "Tue",
+                                            "Wed",
+                                            "Thu",
+                                            "Fri",
+                                            "Sat",
+                                            "Sun"
+                                        ]
+                                    },
+                                    "meal_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "breakfast",
+                                            "lunch",
+                                            "dinner"
+                                        ]
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "available",
+                                            "unavailable"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Menu updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Menu not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Menu Management"
+                ],
+                "summary": "Delete menu",
+                "description": "Remove a menu item from the system",
+                "operationId": "272f57425e4df4f737b526e7ebd5aa38",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Menu deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Menu not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/reservations": {
+            "get": {
+                "tags": [
+                    "Admin - Reservation Management"
+                ],
+                "summary": "Get all reservations",
+                "description": "Retrieve paginated list of all reservations with filter options",
+                "operationId": "833f530d39f7092ea995060e558641e8",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "confirmed",
+                                "cancelled",
+                                "no_show"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filter by date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "description": "Filter by student ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "menu_id",
+                        "in": "query",
+                        "description": "Filter by menu ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/reservations/{id}": {
+            "get": {
+                "tags": [
+                    "Admin - Reservation Management"
+                ],
+                "summary": "Get specific reservation",
+                "description": "Retrieve detailed information about a reservation",
+                "operationId": "8b5187bc5a7dd49d42813db8db747e40",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/reservations/{id}/status": {
+            "put": {
+                "tags": [
+                    "Admin - Reservation Management"
+                ],
+                "summary": "Update reservation status",
+                "description": "Change the status of a reservation",
+                "operationId": "b15614c1646eb77e04097fe53facb615",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "confirmed",
+                                            "cancelled",
+                                            "no_show"
+                                        ],
+                                        "example": "confirmed"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/reservations/statistics": {
+            "get": {
+                "tags": [
+                    "Admin - Statistics"
+                ],
+                "summary": "Get reservation statistics",
+                "description": "Retrieve comprehensive reservation statistics including counts by status and revenue",
+                "operationId": "a18500f83e5680bf0dfb9d2522cfb6cf",
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Start date for statistics (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "End date for statistics (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_reservations": {
+                                                    "type": "integer"
+                                                },
+                                                "confirmed": {
+                                                    "type": "integer"
+                                                },
+                                                "pending": {
+                                                    "type": "integer"
+                                                },
+                                                "cancelled": {
+                                                    "type": "integer"
+                                                },
+                                                "no_show": {
+                                                    "type": "integer"
+                                                },
+                                                "revenue": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "by_payment_method": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/students": {
+            "get": {
+                "tags": [
+                    "Admin - Student Management"
+                ],
+                "summary": "Get all students",
+                "description": "Retrieve paginated list of students with search and filter capabilities",
+                "operationId": "5c887c04639d6c200581585fcdad787c",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by name, email, or student_id",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "description": "Filter by active status",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "university",
+                        "in": "query",
+                        "description": "Filter by university",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Students retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - Student Management"
+                ],
+                "summary": "Create new student",
+                "description": "Register a new student in the system",
+                "operationId": "7cd0dd6d698b1785c1c289cb1fd7fadb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "name",
+                                    "email",
+                                    "university",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "string",
+                                        "example": "STU004"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@university.tn"
+                                    },
+                                    "university": {
+                                        "type": "string",
+                                        "example": "OOUN University"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "wallet_balance": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 0
+                                    },
+                                    "points": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Student created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/students/{id}": {
+            "get": {
+                "tags": [
+                    "Admin - Student Management"
+                ],
+                "summary": "Get specific student",
+                "description": "Retrieve detailed information about a student including reservations, feedback, and wallet transactions",
+                "operationId": "3852c23f8edda8b1098fafdd050e2f5a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Student Management"
+                ],
+                "summary": "Update student",
+                "description": "Update student information",
+                "operationId": "74d788460b1d5e999d03b7c4307cca30",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "university": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "wallet_balance": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "points": {
+                                        "type": "integer"
+                                    },
+                                    "active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Student updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Student Management"
+                ],
+                "summary": "Delete student",
+                "description": "Soft delete a student from the system",
+                "operationId": "c3737c36d8a2c5828b96259606f6fb77",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/students/{id}/restore": {
+            "post": {
+                "tags": [
+                    "Admin - Student Management"
+                ],
+                "summary": "Restore deleted student",
+                "description": "Restore a soft-deleted student",
+                "operationId": "0f98754eb27891fad618d1f8c9e00067",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student restored successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Admin login",
+                "description": "Authenticate an admin user and receive access token",
+                "operationId": "cdfade812131da2a04186cbcc471ecb4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@ooun.tn"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "admin123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "admin": {
+                                                    "type": "object"
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/admin/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Admin logout",
+                "description": "Revoke admin access token",
+                "operationId": "51fb0e2ee9af7af87829ee01515d4a88",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Student login",
+                "description": "Authenticate a student and receive access token",
+                "operationId": "dd63ec8d24957f28850aa6b7e1b271c7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "string",
+                                        "example": "STU001"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "student": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/student/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Student logout",
+                "description": "Revoke student access token",
+                "operationId": "6fcff2ecf24eec3639c0ea66fe460dda",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Student registration",
+                "description": "Register a new student account",
+                "operationId": "36aa8f45252ea4f2c3646d58a86b97ac",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "name",
+                                    "email",
+                                    "university",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "string",
+                                        "example": "STU004"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@university.tn"
+                                    },
+                                    "university": {
+                                        "type": "string",
+                                        "example": "OOUN University"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "student": {
+                                                    "type": "object"
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/v1/feedback": {
+            "get": {
+                "tags": [
+                    "Student - Feedback"
+                ],
+                "summary": "Get student feedback history",
+                "operationId": "20193cdb7ac1efc479f528e27cdec6ca",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Student - Feedback"
+                ],
+                "summary": "Submit feedback",
+                "description": "Submit feedback for a menu and earn 10 points",
+                "operationId": "60736e8377bf9cf8c7bf569139ad37f0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "menu_id",
+                                    "rating",
+                                    "category"
+                                ],
+                                "properties": {
+                                    "menu_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 4
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "taste",
+                                            "quality",
+                                            "service",
+                                            "cleanliness"
+                                        ],
+                                        "example": "taste"
+                                    },
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Great meal!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Feedback submitted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/feedback/{id}": {
+            "get": {
+                "tags": [
+                    "Student - Feedback"
+                ],
+                "summary": "Get specific feedback",
+                "operationId": "0917424b7b70c55b6c9cc5bbfb39d53b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations": {
+            "get": {
+                "tags": [
+                    "Student - Reservations"
+                ],
+                "summary": "Get all student reservations",
+                "description": "Retrieve paginated list of authenticated student's reservations",
+                "operationId": "46f3beef2bd4b5baab51116b6e45657f",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Student - Reservations"
+                ],
+                "summary": "Create new reservation",
+                "operationId": "5cf1a2b9f5c353f06dc56180f4c2e7a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "menu_id",
+                                    "date",
+                                    "payment_method"
+                                ],
+                                "properties": {
+                                    "menu_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-15"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "wallet",
+                                            "points",
+                                            "cash"
+                                        ],
+                                        "example": "wallet"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reservation created"
+                    },
+                    "400": {
+                        "description": "Insufficient balance or unavailable menu"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{id}": {
+            "get": {
+                "tags": [
+                    "Student - Reservations"
+                ],
+                "summary": "Get specific reservation",
+                "operationId": "baab38a9b1cf5d546c3542f47c990884",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "Student - Reservations"
+                ],
+                "summary": "Cancel reservation",
+                "description": "Cancel a reservation and process refund if applicable",
+                "operationId": "fc6df3ebd89dd21ded6f5053ca30df55",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cancelled successfully"
+                    },
+                    "400": {
+                        "description": "Already cancelled"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profile": {
+            "get": {
+                "tags": [
+                    "Student - Profile"
+                ],
+                "summary": "Get student profile",
+                "description": "Retrieve authenticated student's profile information",
+                "operationId": "388082862f6ce54d67bcf37b76c9a48c",
+                "responses": {
+                    "200": {
+                        "description": "Profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "student_id": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                },
+                                                "university": {
+                                                    "type": "string"
+                                                },
+                                                "wallet_balance": {
+                                                    "type": "number"
+                                                },
+                                                "points": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Student - Profile"
+                ],
+                "summary": "Update student profile",
+                "description": "Update authenticated student's profile information",
+                "operationId": "da9d691c00215f2094d4c4c7b8afd3c9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "university": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profile/history": {
+            "get": {
+                "tags": [
+                    "Student - Profile"
+                ],
+                "summary": "Get reservation history",
+                "description": "Retrieve student's complete reservation history",
+                "operationId": "b4d698ea3ce899a7980f2324e4c42ce1",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "History retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/wallet": {
+            "get": {
+                "tags": [
+                    "Student - Wallet"
+                ],
+                "summary": "Get wallet balance and transactions",
+                "operationId": "8a6074f6c0bea0a1242b3cae2764652b",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "balance": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 50
+                                                },
+                                                "transactions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/wallet/recharge": {
+            "post": {
+                "tags": [
+                    "Student - Wallet"
+                ],
+                "summary": "Recharge wallet",
+                "operationId": "a2f3e6ec32021218c1fc07ca7135a5d4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "maximum": 1000,
+                                        "minimum": 1,
+                                        "example": 25
+                                    },
+                                    "payment_reference": {
+                                        "type": "string",
+                                        "example": "REF123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Recharged successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/menu/week": {
+            "get": {
+                "tags": [
+                    "Student - Menu"
+                ],
+                "summary": "Get weekly menu",
+                "description": "Retrieve the weekly menu with optional filters",
+                "operationId": "f66bfbcae81557f66934d8b5ed835047",
+                "parameters": [
+                    {
+                        "name": "day",
+                        "in": "query",
+                        "description": "Filter by day (monday, tuesday, etc.)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "monday",
+                                "tuesday",
+                                "wednesday",
+                                "thursday",
+                                "friday",
+                                "saturday",
+                                "sunday"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "meal_type",
+                        "in": "query",
+                        "description": "Filter by meal type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "breakfast",
+                                "lunch",
+                                "dinner"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Weekly menu retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/menu/{id}": {
+            "get": {
+                "tags": [
+                    "Student - Menu"
+                ],
+                "summary": "Get specific menu item",
+                "operationId": "551af6af72e4b4e47b592abd592ddd42",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Menu not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter your Bearer token in the format: Bearer {token}",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Student and Admin authentication endpoints"
+        },
+        {
+            "name": "Student - Menu",
+            "description": "Weekly menu operations for students"
+        },
+        {
+            "name": "Student - Reservations",
+            "description": "Meal reservation management"
+        },
+        {
+            "name": "Student - Wallet",
+            "description": "Wallet and payment operations"
+        },
+        {
+            "name": "Student - Feedback",
+            "description": "Feedback and rating system"
+        },
+        {
+            "name": "Student - Profile",
+            "description": "Student profile management"
+        },
+        {
+            "name": "Admin - Menu Management",
+            "description": "Admin menu CRUD operations"
+        },
+        {
+            "name": "Admin - Student Management",
+            "description": "Admin student management"
+        },
+        {
+            "name": "Admin - Statistics",
+            "description": "System statistics and analytics"
+        },
+        {
+            "name": "Admin - AI Recommendations",
+            "description": "Admin - AI Recommendations"
+        },
+        {
+            "name": "Admin - Feedback Management",
+            "description": "Admin - Feedback Management"
+        },
+        {
+            "name": "Admin - Reservation Management",
+            "description": "Admin - Reservation Management"
+        }
+    ]
+}

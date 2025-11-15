@@ -11,6 +11,59 @@ use Illuminate\Support\Facades\DB;
 class AdminFeedbackController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/admin/feedback",
+     *     tags={"Admin - Feedback Management"},
+     *     summary="Get all feedback",
+     *     description="Retrieve paginated list of feedback with filtering options",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="rating",
+     *         in="query",
+     *         description="Filter by rating (1-5)",
+     *         required=false,
+     *         @OA\Schema(type="integer", minimum=1, maximum=5)
+     *     ),
+     *     @OA\Parameter(
+     *         name="category",
+     *         in="query",
+     *         description="Filter by category",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"taste", "quality", "service", "cleanliness"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="sentiment",
+     *         in="query",
+     *         description="Filter by sentiment",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"positive", "neutral", "negative"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="menu_id",
+     *         in="query",
+     *         description="Filter by menu ID",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="student_id",
+     *         in="query",
+     *         description="Filter by student ID",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Feedback retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     )
+     * )
+     *
      * Display a listing of feedback.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -62,6 +115,30 @@ class AdminFeedbackController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/admin/feedback/{id}",
+     *     tags={"Admin - Feedback Management"},
+     *     summary="Get specific feedback",
+     *     description="Retrieve detailed information about a feedback entry",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Feedback retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Feedback not found")
+     * )
+     *
      * Display the specified feedback.
      *
      * @param  int  $id
@@ -79,6 +156,43 @@ class AdminFeedbackController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/admin/feedback/statistics",
+     *     tags={"Admin - Statistics"},
+     *     summary="Get feedback statistics",
+     *     description="Retrieve comprehensive feedback statistics including averages and distribution",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date for statistics (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date for statistics (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Statistics retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="total_feedback", type="integer"),
+     *                 @OA\Property(property="average_rating", type="number", format="float"),
+     *                 @OA\Property(property="by_rating", type="array", @OA\Items(type="object")),
+     *                 @OA\Property(property="by_category", type="array", @OA\Items(type="object")),
+     *                 @OA\Property(property="by_sentiment", type="array", @OA\Items(type="object"))
+     *             )
+     *         )
+     *     )
+     * )
+     *
      * Get feedback statistics.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -116,6 +230,29 @@ class AdminFeedbackController extends Controller
     }
 
     /**
+     * @OA\Delete(
+     *     path="/admin/feedback/{id}",
+     *     tags={"Admin - Feedback Management"},
+     *     summary="Delete feedback",
+     *     description="Remove a feedback entry from the system",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Feedback deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Feedback not found")
+     * )
+     *
      * Delete feedback.
      *
      * @param  int  $id

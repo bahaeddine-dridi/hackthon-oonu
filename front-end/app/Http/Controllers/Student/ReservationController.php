@@ -15,10 +15,29 @@ use Illuminate\Support\Facades\DB;
 class ReservationController extends Controller
 {
     /**
-     * Get all reservations for the authenticated student.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/reservations",
+     *     tags={"Student - Reservations"},
+     *     summary="Get all student reservations",
+     *     description="Retrieve paginated list of authenticated student's reservations",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
+     *         )
+     *     )
+     * )
      */
     public function index(Request $request)
     {
@@ -42,10 +61,23 @@ class ReservationController extends Controller
     }
 
     /**
-     * Create a new reservation.
-     *
-     * @param  \App\Http\Requests\StoreReservationRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/reservations",
+     *     tags={"Student - Reservations"},
+     *     summary="Create new reservation",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"menu_id", "date", "payment_method"},
+     *             @OA\Property(property="menu_id", type="integer", example=1),
+     *             @OA\Property(property="date", type="string", format="date", example="2024-01-15"),
+     *             @OA\Property(property="payment_method", type="string", enum={"wallet", "points", "cash"}, example="wallet")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Reservation created"),
+     *     @OA\Response(response=400, description="Insufficient balance or unavailable menu")
+     * )
      */
     public function store(StoreReservationRequest $request)
     {
@@ -126,11 +158,15 @@ class ReservationController extends Controller
     }
 
     /**
-     * Show a specific reservation.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/reservations/{id}",
+     *     tags={"Student - Reservations"},
+     *     summary="Get specific reservation",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=404, description="Not found")
+     * )
      */
     public function show(Request $request, $id)
     {
@@ -147,11 +183,16 @@ class ReservationController extends Controller
     }
 
     /**
-     * Cancel a reservation.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/reservations/{id}/cancel",
+     *     tags={"Student - Reservations"},
+     *     summary="Cancel reservation",
+     *     description="Cancel a reservation and process refund if applicable",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Cancelled successfully"),
+     *     @OA\Response(response=400, description="Already cancelled")
+     * )
      */
     public function cancel(Request $request, $id)
     {

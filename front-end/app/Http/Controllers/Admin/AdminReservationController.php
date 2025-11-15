@@ -11,6 +11,52 @@ use Illuminate\Support\Facades\DB;
 class AdminReservationController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/admin/reservations",
+     *     tags={"Admin - Reservation Management"},
+     *     summary="Get all reservations",
+     *     description="Retrieve paginated list of all reservations with filter options",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Filter by status",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"pending", "confirmed", "cancelled", "no_show"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="date",
+     *         in="query",
+     *         description="Filter by date (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="student_id",
+     *         in="query",
+     *         description="Filter by student ID",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="menu_id",
+     *         in="query",
+     *         description="Filter by menu ID",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Reservations retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     )
+     * )
+     *
      * Display a listing of reservations.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -57,6 +103,30 @@ class AdminReservationController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/admin/reservations/{id}",
+     *     tags={"Admin - Reservation Management"},
+     *     summary="Get specific reservation",
+     *     description="Retrieve detailed information about a reservation",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Reservation retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Reservation not found")
+     * )
+     *
      * Display the specified reservation.
      *
      * @param  int  $id
@@ -74,6 +144,38 @@ class AdminReservationController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/admin/reservations/{id}/status",
+     *     tags={"Admin - Reservation Management"},
+     *     summary="Update reservation status",
+     *     description="Change the status of a reservation",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"status"},
+     *             @OA\Property(property="status", type="string", enum={"pending", "confirmed", "cancelled", "no_show"}, example="confirmed")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Status updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Reservation not found"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     *
      * Update reservation status.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -97,6 +199,45 @@ class AdminReservationController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/admin/reservations/statistics",
+     *     tags={"Admin - Statistics"},
+     *     summary="Get reservation statistics",
+     *     description="Retrieve comprehensive reservation statistics including counts by status and revenue",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date for statistics (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date for statistics (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="date")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Statistics retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="total_reservations", type="integer"),
+     *                 @OA\Property(property="confirmed", type="integer"),
+     *                 @OA\Property(property="pending", type="integer"),
+     *                 @OA\Property(property="cancelled", type="integer"),
+     *                 @OA\Property(property="no_show", type="integer"),
+     *                 @OA\Property(property="revenue", type="number", format="float"),
+     *                 @OA\Property(property="by_payment_method", type="array", @OA\Items(type="object"))
+     *             )
+     *         )
+     *     )
+     * )
+     *
      * Get reservation statistics.
      *
      * @param  \Illuminate\Http\Request  $request

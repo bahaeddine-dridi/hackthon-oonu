@@ -10,6 +10,31 @@ use Illuminate\Http\Request;
 class StudentProfileController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/profile",
+     *     tags={"Student - Profile"},
+     *     summary="Get student profile",
+     *     description="Retrieve authenticated student's profile information",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="student_id", type="string"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="email", type="string"),
+     *                 @OA\Property(property="university", type="string"),
+     *                 @OA\Property(property="wallet_balance", type="number"),
+     *                 @OA\Property(property="points", type="integer")
+     *             )
+     *         )
+     *     )
+     * )
+     *
      * Get the authenticated student's profile.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -27,6 +52,34 @@ class StudentProfileController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/profile",
+     *     tags={"Student - Profile"},
+     *     summary="Update student profile",
+     *     description="Update authenticated student's profile information",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="university", type="string"),
+     *             @OA\Property(property="password", type="string", format="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     *
      * Update the authenticated student's profile.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -58,6 +111,31 @@ class StudentProfileController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/profile/history",
+     *     tags={"Student - Profile"},
+     *     summary="Get reservation history",
+     *     description="Retrieve student's complete reservation history",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="History retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     )
+     * )
+     *
      * Get student's reservation history.
      *
      * @param  \Illuminate\Http\Request  $request

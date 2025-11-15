@@ -10,6 +10,30 @@ use Illuminate\Http\Request;
 class AIRecommendationController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/admin/ai/recommendations",
+     *     tags={"Admin - AI Recommendations"},
+     *     summary="Get AI recommendations",
+     *     description="Retrieve AI-generated recommendations based on feedback analysis (placeholder implementation)",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Recommendations retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="title", type="string"),
+     *                 @OA\Property(property="content", type="string"),
+     *                 @OA\Property(property="confidence", type="number", format="float"),
+     *                 @OA\Property(property="category", type="string")
+     *             )),
+     *             @OA\Property(property="note", type="string")
+     *         )
+     *     )
+     * )
+     *
      * Display a listing of AI recommendations (placeholder).
      *
      * @return \Illuminate\Http\JsonResponse
@@ -74,6 +98,32 @@ class AIRecommendationController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/admin/ai/recommendations",
+     *     tags={"Admin - AI Recommendations"},
+     *     summary="Save AI recommendation",
+     *     description="Store an AI recommendation in the database",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "content"},
+     *             @OA\Property(property="title", type="string", example="Improve Service Speed"),
+     *             @OA\Property(property="content", type="string", example="Based on analysis, consider adding more service counters")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Recommendation saved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     *
      * Store AI recommendations in database (optional).
      *
      * @param  \Illuminate\Http\Request  $request
@@ -96,6 +146,31 @@ class AIRecommendationController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/admin/ai/recommendations/saved",
+     *     tags={"Admin - AI Recommendations"},
+     *     summary="Get saved recommendations",
+     *     description="Retrieve previously saved AI recommendations from database",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Saved recommendations retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="meta", type="object")
+     *         )
+     *     )
+     * )
+     *
      * Get saved recommendations from database.
      *
      * @return \Illuminate\Http\JsonResponse

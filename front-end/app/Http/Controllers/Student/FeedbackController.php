@@ -11,10 +11,13 @@ use Illuminate\Http\Request;
 class FeedbackController extends Controller
 {
     /**
-     * Get all feedback submitted by the student.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/feedback",
+     *     tags={"Student - Feedback"},
+     *     summary="Get student feedback history",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="Success")
+     * )
      */
     public function index(Request $request)
     {
@@ -38,10 +41,24 @@ class FeedbackController extends Controller
     }
 
     /**
-     * Submit new feedback.
-     *
-     * @param  \App\Http\Requests\StoreFeedbackRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/feedback",
+     *     tags={"Student - Feedback"},
+     *     summary="Submit feedback",
+     *     description="Submit feedback for a menu and earn 10 points",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"menu_id", "rating", "category"},
+     *             @OA\Property(property="menu_id", type="integer", example=1),
+     *             @OA\Property(property="rating", type="integer", minimum=1, maximum=5, example=4),
+     *             @OA\Property(property="category", type="string", enum={"taste", "quality", "service", "cleanliness"}, example="taste"),
+     *             @OA\Property(property="comment", type="string", example="Great meal!")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Feedback submitted")
+     * )
      */
     public function store(StoreFeedbackRequest $request)
     {
@@ -64,11 +81,14 @@ class FeedbackController extends Controller
     }
 
     /**
-     * Show specific feedback.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/feedback/{id}",
+     *     tags={"Student - Feedback"},
+     *     summary="Get specific feedback",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Success")
+     * )
      */
     public function show(Request $request, $id)
     {

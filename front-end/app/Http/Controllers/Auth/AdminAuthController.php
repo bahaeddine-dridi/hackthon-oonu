@@ -11,6 +11,34 @@ use Illuminate\Validation\ValidationException;
 class AdminAuthController extends Controller
 {
     /**
+     * @OA\Post(
+     *     path="/admin/login",
+     *     tags={"Authentication"},
+     *     summary="Admin login",
+     *     description="Authenticate an admin user and receive access token",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="admin@ooun.tn"),
+     *             @OA\Property(property="password", type="string", format="password", example="admin123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="admin", type="object"),
+     *                 @OA\Property(property="token", type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Invalid credentials")
+     * )
+     *
      * Handle admin login request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -53,6 +81,22 @@ class AdminAuthController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/admin/logout",
+     *     tags={"Authentication"},
+     *     summary="Admin logout",
+     *     description="Revoke admin access token",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     *
      * Handle admin logout request.
      *
      * @param  \Illuminate\Http\Request  $request

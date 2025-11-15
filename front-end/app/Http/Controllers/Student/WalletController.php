@@ -11,10 +11,24 @@ use Illuminate\Support\Facades\DB;
 class WalletController extends Controller
 {
     /**
-     * Get wallet balance and transactions.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/wallet",
+     *     tags={"Student - Wallet"},
+     *     summary="Get wallet balance and transactions",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="page", in="query", required=false, @OA\Schema(type="integer")),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="balance", type="number", format="float", example=50.00),
+     *                 @OA\Property(property="transactions", type="array", @OA\Items(type="object"))
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function index(Request $request)
     {
@@ -40,10 +54,22 @@ class WalletController extends Controller
     }
 
     /**
-     * Recharge wallet.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/wallet/recharge",
+     *     tags={"Student - Wallet"},
+     *     summary="Recharge wallet",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"amount"},
+     *             @OA\Property(property="amount", type="number", format="float", example=25.00, minimum=1, maximum=1000),
+     *             @OA\Property(property="payment_reference", type="string", example="REF123456")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Recharged successfully"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
      */
     public function recharge(Request $request)
     {
